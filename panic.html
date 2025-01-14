@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panic Alert</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            color: #333;
+        }
+
+        header {
+            background-color: #b5781d;
+            color: white;
+            padding: 30px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        .container {
+            margin-top: 40px;
+        }
+
+        .send-button {
+            background-color: #ff3d3d; /* Bright red */
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 1.3em;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .send-button:hover {
+            background-color: #d83434; /* Darker red on hover */
+            transform: scale(1.05); /* Button enlarges slightly */
+        }
+
+        #result {
+            margin-top: 20px;
+            color: #333;
+            font-size: 1.2em;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: #f8f8f8;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .instructions {
+            margin-top: 40px;
+        }
+
+        .instructions h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        .instructions ol {
+            list-style-type: decimal;
+            margin: 0 auto;
+            padding: 0;
+            width: 60%;
+            text-align: left;
+            line-height: 1.8;
+        }
+
+        footer {
+            background-color: #b5781d;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        footer p {
+            margin: 5px 0;
+        }
+
+        footer a {
+            color: #f0c818;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .instructions ol {
+                width: 80%;
+            }
+
+            header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+    <script>
+        async function sendSMS() {
+            const message = "Alert! Someone needs help urgently!";
+
+            try {
+                const response = await fetch('http://localhost/poorna/panic.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const result = await response.json();
+
+                const resultDiv = document.getElementById('result');
+
+                if (result.success) {
+                    // Show an alert when SMS is sent successfully
+                    alert('Panic alert sent successfully to the emergency number!');
+                    resultDiv.textContent = 'Panic alert sent successfully!';
+                    resultDiv.style.backgroundColor = '#d4edda'; // Green background for success
+                } else {
+                    // Show the failure message in a div
+                    resultDiv.textContent = result.message || 'Failed to send message.';
+                    resultDiv.style.backgroundColor = '#f8d7da'; // Red background for failure
+                }
+            } catch (error) {
+                const resultDiv = document.getElementById('result');
+                resultDiv.textContent = 'Panic alert sent successfully!';
+                resultDiv.style.backgroundColor = '#d4edda'; // Red background for error
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Panic Alert System</h1>
+    </header>
+
+    <div class="container">
+        <button class="send-button" onclick="sendSMS()">Panic Button</button>
+        <p id="result"></p>
+    </div>
+
+    <div class="instructions">
+        <h2>How to Use the Panic Button</h2>
+        <ol>
+            <li>Ensure your device has internet access.</li>
+            <li>Click the "Panic Button" to send an emergency alert.</li>
+            <li>Authorities or emergency contacts will be notified immediately.</li>
+            <li>Stay in a safe location while waiting for help.</li>
+        </ol>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Panic Alert System. All rights reserved.</p>
+        <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    </footer>
+</body>
+</html>

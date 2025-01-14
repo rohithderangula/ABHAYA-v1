@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Contacts</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* styles.css */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1em 0;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column; /* Arrange items in a column */
+            align-items: center; /* Center items horizontally */
+            padding: 20px;
+        }
+
+        .contact-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin: 10px;
+            padding: 20px;
+            width: 60%; /* Initial width */
+            max-width: 900px; /* Maximum width of the card */
+            text-align: center;
+            text-decoration: none; /* Remove underline from links */
+            color: inherit; /* Inherit color from parent */
+            transition: transform 0.3s, box-shadow 0.3s, width 0.3s; /* Added width transition */
+        }
+
+        .contact-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            width: 90%; /* Expanded width on hover */
+        }
+
+        .contact-card i {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .contact-card .call-icon {
+            font-size: 1.2em;
+            margin-left: 10px;
+        }
+
+        .contact-card h2 {
+            margin: 0 0 10px 0;
+        }
+
+        .contact-card p {
+            font-size: 1.2em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Emergency Contacts</h1>
+        <p>Essential Contacts for Immediate Assistance</p>
+    </header>
+
+    <main>
+        <a href="tel:100" class="contact-card">
+            <i class="fa-solid fa-police-box"></i>
+            <h2>Police</h2>
+            <p>100 <i class="fa-solid fa-phone call-icon"></i></p>
+        </a>
+        <a href="tel:1098" class="contact-card">
+            <i class="fa-solid fa-child"></i>
+            <h2>Child Help Line</h2>
+            <p>1098 <i class="fa-solid fa-phone call-icon"></i></p>
+        </a>
+        <a href="tel:181" class="contact-card">
+            <i class="fa-solid fa-female"></i>
+            <h2>Women Helpline</h2>
+            <p>181 <i class="fa-solid fa-phone call-icon"></i></p>
+        </a>
+        <a href="tel:101" class="contact-card">
+            <i class="fa-solid fa-fire"></i>
+            <h2>Fire Service</h2>
+            <p>101 <i class="fa-solid fa-phone call-icon"></i></p>
+        </a>
+        <a href="tel:108" class="contact-card">
+            <i class="fa-solid fa-ambulance"></i>
+            <h2>Ambulance</h2>
+            <p>108 <i class="fa-solid fa-phone call-icon"></i></p>
+        </a>
+        <a href="tel:1073" class="contact-card">
+            <i class="fa-solid fa-car-crash"></i>
+            <h2>Road Accident</h2>
+            <p>1073 <i class="fa-solid fa-phone call-icon"></i></p>
+        </a>
+        <a href="tel:112" class="contact-card">
+            <i class="fa-solid fa-exclamation"></i>
+            <h2>National Emergency</h2>
+            <p>112 <i class="fa-solid fa-phone call-icon"></i></p>
+        </a>
+        <a href="tel:1363" class="contact-card">
+            <i class="fa-solid fa-map"></i>
+            <h2>Tourist Helpline</h2>
+            <p>1363 <i class="fa-solid fa-phone call-icon"></i></p>
+        </a>
+    </main>
+
+    <footer>
+        <p>Ensure to regularly update these contacts. For immediate help, always call emergency services first.</p>
+    </footer>
+</body>
+</html>

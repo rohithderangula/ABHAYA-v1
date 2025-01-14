@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        *,
+        *:before,
+        *:after {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, white, #e0dde2);
+            font-family: 'Arial', sans-serif;
+        }
+
+        .logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .logo-img {
+            width: 200px; 
+            height: 200px;
+            border-radius: 100px;
+        }
+
+        .form-container {
+            width: 90%;
+            max-width: 600px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .title {
+            margin-bottom: 24px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            animation: colorZoom 3s infinite ease-in-out;
+        }
+
+        @keyframes colorZoom {
+            0% {
+                color: #333;
+                transform: scale(1);
+            }
+            50% {
+                color: #3498db;
+                transform: scale(1.1);
+            }
+            100% {
+                color: #333;
+                transform: scale(1);
+            }
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .input {
+            border-radius: 20px;
+            border: 1px solid #c0c0c0;
+            padding: 12px 15px;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .input:focus {
+            border-color: #007BFF;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+        }
+
+        .page-link {
+            text-align: end;
+            font-size: 12px;
+            color: #007BFF;
+            cursor: pointer;
+            text-decoration: underline;
+            transition: color 0.3s ease;
+        }
+
+        .page-link:hover {
+            color: #0056b3;
+        }
+
+        .form-btn {
+            padding: 12px;
+            border-radius: 20px;
+            border: none;
+            background-color: #007BFF;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .form-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .form-btn:active {
+            background-color: #004494;
+            transform: scale(0.98);
+        }
+
+        .sign-up-label {
+            text-align: center;
+            font-size: 18px;
+            color: #555;
+        }
+
+        .sign-up-link {
+            color: #007BFF;
+            text-decoration: underline;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .sign-up-link:hover {
+            color: #0056b3;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .apple-login-button,
+        .google-login-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .apple-login-button {
+            background-color: #000;
+            color: #fff;
+            border: 2px solid #000;
+        }
+
+        .apple-login-button:hover {
+            background-color: #333;
+            border-color: #333;
+        }
+
+        .google-login-button {
+            border: 2px solid #747474;
+            color: #747474;
+            background: #fff;
+        }
+
+        .google-login-button:hover {
+            background-color: #f0f0f0;
+            border-color: #555;
+            color: #555;
+        }
+
+        .apple-icon,
+        .google-icon {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body onload="getLocation()">
+    <div class="form-container">
+        <div class="logo">
+            <img src="https://i.ibb.co/bPgZ74f/logo.png" class="logo-img" alt="Logo" />
+        </div>
+        <p class="title">Login</p>
+        <form class="form" method="POST" action="login.php">
+            <input type="email" name="email" class="input" placeholder="Email" required>
+            <input type="password" name="password" class="input" placeholder="Password" required>
+            <p class="page-link">Forgot Password?</p>
+            <input type="hidden" id="latitude" name="latitude">
+            <input type="hidden" id="longitude" name="longitude">
+            <button type="submit" class="form-btn">Log in</button>
+        </form>
+        <br>
+        <p class="sign-up-label">
+            Don't have an account? <a class="sign-up-link" href="register.html">Register</a>
+        </p>
+        <!-- Social login buttons removed for now
+        <div class="buttons-container">
+            <div class="apple-login-button">
+                <svg class="apple-icon" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M747.4 535.7c-.4-68.2 30.5-119.6 92.9-157.5-34.9-50-87.7-77.5-157.3-82.8-65.9-5.2-138 38.4-164.4 38.4-27.9 0-91.7-36.6-141.9-36.6C273.1 298.8 163 379.8 163 544.6c0 48.7 8.9 99 26.7 150.8 23.8 68.2 109.6 235.3 199.1 232.6 46.8-1.1 79.9-33.2 140.8-33.2 59.1 0 89.7 33.2 141.9 33.2 90.3-1.3 167.9-153.2 190.5-221.6-121.1-57.1-114.6-167.2-114.6-170.7zm-105.1-305c50.7-60.2 46.1-115 44.6-134.7-44.8 2.6-96.6 30.5-126.1 64.8-32.5 36.8-51.6 82.3-47.5 133.6 48.4 3.7 92.6-21.2 129-63.7z"></path>
+                </svg>
+                <span>Log in with Apple</span>
+            </div>
+            <div class="google-login-button">
+                <svg class="google-icon" viewBox="0 0 488 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M488 261.8C488 403.3 391.4 512 244 512 109.3 512 0 402.7 0 268S109.3 24 244 24c66 0 120.7 24.3 163.3 63.9l-66.2 63.3C309.6 110.7 280.7 96 244 96c-96.8 0-175.3 82.8-175.3 172S147.2 440 244 440c81.4 0 140.6-50.6 154.8-121.6H244v-97.6h244v40z"></path>
+                </svg>
+                <span>Log in with Google</span>
+            </div>
+        </div>
+        -->
+    </div>
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    document.getElementById("latitude").value = position.coords.latitude;
+                    document.getElementById("longitude").value = position.coords.longitude;
+                }, function (error) {
+                    alert("Unable to fetch location. Please allow location access.");
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Trigger Call System</title>
+    <!-- Include Animate.css and Bootstrap from CDNs -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700&display=swap');
+
+        body {
+            background-color: #bcbcbc; /* Dark background */
+            color: white; /* White text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Raleway', sans-serif; /* Modern font style */
+            animation: fadeIn 2s ease-in-out; /* Animation on load */
+        }
+
+        .content-box {
+            background-color: #ff0000; /* Initial background color (red) */
+            padding: 40px;
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Shadow effect */
+            text-align: center;
+            animation: pulseBackground 2s infinite; /* Background pulse animation */
+            width: 100%;
+            max-width: 600px; /* Responsive width */
+        }
+
+        /* Custom keyframes for the background box animation */
+        @keyframes pulseBackground {
+            0% {
+                background-color: #ff0000; /* Red */
+                box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            }
+            33% {
+                background-color: #ff9900; /* Orange */
+                box-shadow: 0 0 40px rgba(255, 153, 0, 0.8);
+            }
+            66% {
+                background-color: #ffff00; /* Yellow */
+                box-shadow: 0 0 60px rgba(255, 255, 0, 0.8);
+            }
+            100% {
+                background-color: #ff0000; /* Back to Red */
+                box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            }
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 3rem; /* Larger font */
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Text shadow for better visibility */
+            color: black;
+            font-weight: bold;
+        }
+
+        /* Custom keyframes for body fade-in animation */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        button {
+            background-color: #ff0000; /* Initial red color */
+            color: white;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 50px; /* Fully rounded button */
+            font-size: 2rem; /* Larger text */
+            font-weight: bold;
+            cursor: pointer;
+            position: relative; /* Positioning for the glow */
+            overflow: hidden; /* Hide overflowing parts */
+            transition: transform 0.3s ease; /* Smooth hover transition */
+        }
+
+        /* Outer glow animation */
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200%; /* Larger than the button */
+            height: 200%; /* Larger than the button */
+            border-radius: 50%; /* Circular shape */
+            background: radial-gradient(circle, rgba(255, 0, 0, 0.5), rgba(255, 153, 0, 0.5), rgba(255, 255, 0, 0.5)); /* Multi-color gradient */
+            transform: translate(-50%, -50%) scale(0); /* Initially hidden */
+            animation: glowing 2s infinite; /* Glowing animation */
+            z-index: 0; /* Behind the button */
+        }
+
+        /* Button animation keyframes */
+        @keyframes glowing {
+            0% {
+                transform: translate(-50%, -50%) scale(0); /* Start hidden */
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2); /* Scale up */
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0); /* Scale down */
+            }
+        }
+
+        button:hover {
+            transform: scale(1.1); /* Larger on hover */
+        }
+
+        /* Prevent text on button from being obscured by the glow */
+        button span {
+            position: relative; /* Position text above the glow */
+            z-index: 1; /* On top of the glow */
+        }
+    </style>
+</head>
+<body>
+    <div class="content-box">
+        <h1>Voice Trigger Call System</h1>
+        <button id="callButton">
+            <span>Voice Trigger Call</span>
+        </button>
+    </div>
+
+    <!-- Modal for displaying phone number -->
+    <div class="modal fade" id="callModal" tabindex="-1" role="dialog" aria-labelledby="callModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="callModalLabel">Dial the Number</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to call <strong id="phoneNumberDisplay">+918688493369</strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmCall">Call</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Function to trigger the phone call
+        function triggerCall() {
+            const phoneNumber = "+918688493369"; // Replace with your emergency number
+            window.location.href = `tel:${phoneNumber}`;
+        }
+
+        // Function to start voice recognition
+        function startVoiceRecognition() {
+            if ('webkitSpeechRecognition' in window) {
+                const recognition = new webkitSpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US'; // Set language for voice recognition
+
+                recognition.onstart = function() {
+                    console.log('Voice recognition started, listening for "Help Me", "Abhaya", or "help"....');
+                };
+
+                recognition.onresult = function(event) {
+                    let transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+                    console.log('Transcript: ', transcript);
+                    
+                    // If "help me" or "abhaya" is detected, show the call modal
+                    if (transcript.includes('help me') || transcript.includes('abhaya') || transcript.includes('help')) {
+                        $('#callModal').modal('show'); // Show the modal
+                    }
+                };
+
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event);
+                };
+
+                recognition.onend = function() {
+                    recognition.start();  // Restart recognition after it ends
+                };
+
+                recognition.start(); // Start voice recognition
+            } else {
+                alert('Speech recognition is not supported in your browser. Please use Google Chrome.');
+            }
+        }
+
+        // Request microphone permission and start voice recognition
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(function(stream) {
+                console.log('Microphone access granted.');
+                startVoiceRecognition(); // Start voice recognition after permission granted
+            })
+            .catch(function(err) {
+                console.error('Microphone access denied:', err);
+            });
+
+        // Handle the call button click
+        document.getElementById('callButton').addEventListener('click', function() {
+            $('#callModal').modal('show'); // Show the modal on button click
+        });
+
+        // Confirm call button action
+        document.getElementById('confirmCall').addEventListener('click', function() {
+            triggerCall(); // Call the triggerCall function
+            $('#callModal').modal('hide'); // Hide the modal
+        });
+    </script>
+</body>
+</html>

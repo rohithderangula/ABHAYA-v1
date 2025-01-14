@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geo-Fencing - ABHAYA</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            padding-bottom: 60px;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+
+        .map-container {
+            height: 500px;
+            margin-bottom: 30px;
+        }
+
+        .info-box {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, .2);
+            padding: 10px;
+            margin-bottom: 20px;
+            transition: transform .3s;
+        }
+
+        .info-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, .3);
+        }
+
+        .info-box h2 {
+            margin-top: 0;
+        }
+
+        footer {
+            background-color: green;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        footer a {
+            color: #f4f4f4;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        header {
+            background-color: green;
+            padding: 10px;
+        }
+    </style>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+
+<body>
+    <header class="text-white text-center py-3">
+        <h1>ABHAYA - Geo-Fencing</h1>
+        <p>Monitor and Manage Virtual Boundaries</p>
+    </header>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div id="map" class="map-container animate__animated animate__fadeIn"></div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-box animate__animated animate__fadeIn">
+                    <h2>Set Up a Geo-Fence</h2>
+                    <p>Define your virtual boundary on the map to monitor specific areas.</p>
+                    <input type="number" id="fence-radius" class="form-control mb-2" placeholder="Enter radius in meters">
+                    <button id="set-fence" class="btn btn-primary">Set Fence Mode</button>
+                    <p id="fence-info" class="mt-3"></p>
+                </div>
+                <div class="info-box animate__animated animate__fadeIn">
+                    <h2>Alerts</h2>
+                    <p>Receive notifications when a device enters or exits the geo-fenced area.</p>
+                    <div id="notification-box"></div>
+                </div>
+                <div class="info-box animate__animated animate__fadeIn">
+                    <h2>Track Location</h2>
+                    <p>Track and manage locations within the geo-fenced boundaries.</p>
+                    <button id="track-location" class="btn btn-secondary">Track Location</button>
+                    <button id="stop-tracking" class="btn btn-danger mt-2" style="display:none;">Stop Tracking</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let map, geoFenceCircle, currentPositionMarker, userPosition, watchID, trackingStartTime, trackingEndTime;
+
+        function initMap() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    userPosition = { lat: position.coords.latitude, lng: position.coords.longitude };
+                    map = L.map('map').setView([userPosition.lat, userPosition.lng], 15);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(map);
+                    currentPositionMarker = L.marker([userPosition.lat, userPosition.lng]).addTo(map).bindPopup("You are here").openPopup();
+                    document.getElementById('set-fence').addEventListener('click', setGeoFenceHandler);
+                    document.getElementById('track-location').addEventListener('click', startTracking);
+                    document.getElementById('stop-tracking').addEventListener('click', stopTracking);
+                }, () => showNotification("Geolocation failed. Please enable location services.", "error"));
+            } else {
+                showNotification("Geolocation is not supported by your browser.", "error");
+            }
+        }
+
+        function setGeoFenceHandler() {
+            const radius = parseInt(document.getElementById('fence-radius').value) || 500;
+            if (radius <= 0) return showNotification("Please enter a valid geo-fence radius.", "error");
+            setGeoFence([userPosition.lat, userPosition.lng], radius);
+            const formData = new FormData();
+            formData.append("latitude", userPosition.lat);
+            formData.append("longitude", userPosition.lng);
+            formData.append("radius", radius);
+            fetch('geo.php', { method: 'POST', body: formData })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to save geo-fence settings.');
+                    }
+                    return response.text();
+                })
+                .then(data => showNotification("Geo-fence set successfully.", "success"))
+                .catch(error => showNotification(error.message, "error"));
+        }
+
+        function setGeoFence(latLng, radius) {
+            if (geoFenceCircle) map.removeLayer(geoFenceCircle);
+            geoFenceCircle = L.circle(latLng, {
+                color: 'blue',
+                fillColor: '#30f',
+                fillOpacity: 0.5,
+                radius
+            }).addTo(map);
+            showNotification(`Geo-fence set with a radius of ${radius} meters.`, "success");
+        }
+
+        function startTracking() {
+            if (!geoFenceCircle) return showNotification("Please set the geo-fence before starting tracking.", "error");
+            if (navigator.geolocation) {
+                trackingStartTime = new Date();
+                watchID = navigator.geolocation.watchPosition(trackUserLocation, handleError, { enableHighAccuracy: true });
+                document.getElementById('stop-tracking').style.display = 'block';
+                document.getElementById('track-location').style.display = 'none';
+                showNotification("Tracking started.", "success");
+            } else {
+                showNotification("Geolocation is not supported by your browser.", "error");
+            }
+        }
+
+        function stopTracking() {
+            if (watchID) {
+                navigator.geolocation.clearWatch(watchID);
+                watchID = null;
+                trackingEndTime = new Date();
+                const timeGap = calculateTimeGap(trackingStartTime, trackingEndTime);
+                if (geoFenceCircle) { map.removeLayer(geoFenceCircle); geoFenceCircle = null; }
+                document.getElementById('fence-radius').value = "";
+                document.getElementById('stop-tracking').style.display = 'none';
+                document.getElementById('track-location').style.display = 'block';
+                saveTrackingData(trackingStartTime, trackingEndTime, timeGap);
+                showNotification("Tracking stopped. Geo-fence and input reset.", "success");
+            }
+        }
+
+        function trackUserLocation(position) {
+            const newLatLng = [position.coords.latitude, position.coords.longitude];
+            currentPositionMarker.setLatLng(newLatLng).update();
+            map.setView(newLatLng, 15);
+            if (geoFenceCircle) {
+                const distance = map.distance(newLatLng, geoFenceCircle.getLatLng());
+                showNotification(distance > geoFenceCircle.getRadius() ? "You have exited the geo-fenced area!" : "You are inside the geo-fenced area.", distance > geoFenceCircle.getRadius() ? "warning" : "info");
+            }
+        }
+
+        function showNotification(message, type) {
+            const notificationBox = document.getElementById('notification-box');
+            const notificationTypes = { success: "alert-success", error: "alert-danger", warning: "alert-warning", info: "alert-info" };
+            notificationBox.innerHTML = `<div class="alert ${notificationTypes[type]} mt-2" role="alert">${message}</div>`;
+        }
+
+        function calculateTimeGap(start, end) {
+            const gap = Math.abs(end - start);
+            const minutes = Math.floor((gap / 1000) / 60);
+            const seconds = Math.floor((gap / 1000) % 60);
+            return `${minutes} min ${seconds} sec`;
+        }
+
+        function saveTrackingData(startTime, endTime, timeGap) {
+            const formData = new FormData();
+            formData.append("start_time", startTime.toISOString());
+            formData.append("end_time", endTime.toISOString());
+            formData.append("time_gap", timeGap);
+            fetch('tracking.php', { method: 'POST', body: formData })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to save tracking data.');
+                    }
+                    return response.text();
+                })
+                .then(data => showNotification("Tracking data saved successfully.", "success"))
+                .catch(error => showNotification(error.message, "error"));
+        }
+
+        function handleError(error) {
+            showNotification("Error occurred while tracking location: " + error.message, "error");
+        }
+
+        window.onload = initMap;
+    </script>
+    <footer>
+        <p>&copy; 2024 ABHAYA. All rights reserved.</p>
+        <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    </footer>
+</body>
+
+</html>

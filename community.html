@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abhaya Community Help</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+       #map {
+            height: 600px;
+            width: 1200px;
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .action-buttons {
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+        .action-buttons button {
+            background-color: #00796b;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        #notification-banner {
+            background-color: #00796b;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000; /* Ensure the banner is above other elements */
+        }
+        body {
+            background-color: #e0f7fa;
+            color: #00796b;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="notification-banner">Help Request from Nearby</div>
+    <div id="map"></div>
+    <div class="action-buttons">
+        <button id="send-help">Send Help Request</button>
+        <button id="view-members">View Nearby Members</button>
+        <button id="emergency">Connect to Emergency Services</button>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map with a default view
+        var map = L.map('map').setView([51.505, -0.09], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        }).addTo(map);
+
+        // Add a marker for the user's live location
+        var userMarker;
+
+        function updateUserLocation(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            // Center the map on the user's location
+            map.setView([latitude, longitude], 13);
+
+            // Add or update the user marker
+            if (userMarker) {
+                userMarker.setLatLng([latitude, longitude]);
+            } else {
+                userMarker = L.marker([latitude, longitude]).addTo(map)
+                    .bindPopup('You are here!').openPopup();
+            }
+        }
+
+        // Get live location updates
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(updateUserLocation);
+            navigator.geolocation.watchPosition(updateUserLocation, () => {
+                alert('Unable to retrieve your live location.');
+            });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+
+        // Function to send help request
+        function sendHelpRequest() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    const mapLink = `https://www.google.com/maps/?q=${latitude},${longitude}`;
+                    const message = `Help needed from my location! View on map: ${mapLink}`;
+                    const recipients = ['+919133159867','+917207245888','+919542629626']; // Add more numbers as needed
+
+                    fetch('location.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message: message, recipients: recipients, latitude: latitude, longitude: longitude }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        alert('An error occurred while sending the help request.');
+                    });
+                }, () => {
+                    alert('Unable to retrieve your location.');
+                });
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        }
+
+        // Send help request on button click
+        document.getElementById('send-help').addEventListener('click', sendHelpRequest);
+
+        // View nearby members alert
+        document.getElementById('view-members').addEventListener('click', function() {
+            alert('Viewing nearby members...');
+        });
+
+        // Connect to emergency services
+        document.getElementById('emergency').addEventListener('click', function() {
+            window.location.href = 'tel:112';
+        });
+    </script>
+</body>
+</html>

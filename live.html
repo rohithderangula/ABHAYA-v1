@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Tracking with Leaflet</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Inline CSS for page styling -->
+    <style>
+        /* Basic page styling */
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            height: 100%;
+            background-color: #f0f4f7;
+        }
+
+        /* Header styling */
+        .header {
+            background-color: #002050;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header img {
+            float: left;
+            width: 70px;
+            height: 70px;
+            margin-right: 10px;
+            border-radius: 50px;
+        }
+
+        /* Footer styling */
+        .footer {
+            background-color: #002050;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Adjust body for header and footer */
+        .container {
+            text-align: center;
+            padding: 100px 20px 60px 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Styling for map container */
+        .map-container {
+            width: 100%;
+            height: 400px;
+            margin-bottom: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* Button styling */
+        .track-btn,
+        .stop-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .track-btn {
+            background-color: #4caf50;
+        }
+
+        .stop-btn {
+            background-color: #f44336;
+        }
+
+        /* Status message styling */
+        .status-message {
+            font-size: 16px;
+            margin-top: 10px;
+            color: #555;
+        }
+    </style>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+
+<body>
+    <!-- Header with Abhaya logo -->
+    <div class="header">
+        <img src="ab.jpg" alt="Abhaya Logo">
+        Live Location Tracking with Leaflet
+    </div>
+
+    <div class="container">
+        <div id="map" class="map-container"></div>
+        <button id="trackButton" class="track-btn">Start Tracking</button>
+        <button id="stopButton" class="stop-btn">Stop Tracking</button>
+        <p id="status" class="status-message">Click "Start Tracking" to get your live location.</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        © 2024 Abhaya. All rights reserved.
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        let map, marker, watchID;
+
+        function initMap(latitude, longitude) {
+            const location = [latitude, longitude];
+
+            // Initialize the Leaflet map centered at the current location
+            map = L.map('map').setView(location, 15);
+
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Add a marker at the current location
+            marker = L.marker(location).addTo(map);
+        }
+
+        function updateLocation(latitude, longitude) {
+            const newLocation = [latitude, longitude];
+            map.setView(newLocation, 15);
+            marker.setLatLng(newLocation);
+        }
+
+        function startTracking() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const { latitude, longitude } = position.coords;
+                        initMap(latitude, longitude); // Initialize map with the user's current location
+                        document.getElementById('status').textContent = `Tracking: Latitude: ${latitude}, Longitude: ${longitude}`;
+
+                        // Start watching the location updates
+                        watchID = navigator.geolocation.watchPosition(
+                            position => {
+                                const { latitude, longitude } = position.coords;
+                                updateLocation(latitude, longitude);
+                                document.getElementById('status').textContent = `Tracking: Latitude: ${latitude}, Longitude: ${longitude}`;
+                            },
+                            error => {
+                                document.getElementById('status').textContent = 'Unable to retrieve location';
+                            },
+                            { enableHighAccuracy: true }
+                        );
+                    },
+                    error => {
+                        document.getElementById('status').textContent = 'Unable to retrieve current location';
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function stopTracking() {
+            if (watchID) {
+                navigator.geolocation.clearWatch(watchID);
+                document.getElementById('status').textContent = 'Tracking stopped';
+            }
+        }
+
+        // Automatically set the current location when the page loads
+        window.onload = () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const { latitude, longitude } = position.coords;
+                        initMap(latitude, longitude); // Initialize map with the user's current location
+                        document.getElementById('status').textContent = `Current Location: Latitude: ${latitude}, Longitude: ${longitude}`;
+                    },
+                    error => {
+                        document.getElementById('status').textContent = 'Unable to retrieve current location';
+                        initMap(0, 0); // Default location if geolocation fails
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by this browser.");
+                initMap(0, 0); // Default location if geolocation is not supported
+            }
+        };
+
+        document.getElementById('trackButton').addEventListener('click', startTracking);
+        document.getElementById('stopButton').addEventListener('click', stopTracking);
+    </script>
+</body>
+
+</html>

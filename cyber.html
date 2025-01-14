@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Harassment Report Form</title>
+    <style>
+         * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        header, footer {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        .platforms {
+            flex: 1;
+            background-color: #2c3e50;
+            padding: 40px;
+            color: #ecf0f1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            max-width: 350px;
+        }
+        .platforms h2 {
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+        /* Button Styling */
+        .btn-platform {
+            font-size: 1.2rem;
+            padding: 1rem 2.5rem;
+            border: none;
+            outline: none;
+            border-radius: 0.4rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            background-color: rgb(14, 14, 26);
+            color: rgb(234, 234, 234);
+            font-weight: 700;
+            transition: 0.6s;
+            box-shadow: 0px 0px 60px #1f4c65;
+            -webkit-box-reflect: below 10px linear-gradient(to bottom, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.4));
+            width: 100%;
+            margin-bottom: 15px;
+            display: flex; /* Flex display for icon alignment */
+            align-items: center; /* Center items vertically */
+            justify-content: center; /* Center items horizontally */
+        }
+
+        .btn-platform:active {
+            scale: 0.92;
+        }
+
+        .btn-platform:hover {
+            background: rgb(2, 29, 78);
+            background: linear-gradient(270deg, rgba(2, 29, 78, 0.681) 0%, rgba(31, 215, 232, 0.873) 60%);
+            color: rgb(4, 4, 38);
+        }
+
+        .form-container {
+            flex: 3;
+            padding: 40px;
+            background-color: #ffffff;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto; /* Enable vertical scroll */
+        }
+        .form {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.05);
+            position: relative; /* Position relative for the button */
+        }
+        .active {
+            display: block;
+        }
+        h3 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        label {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #555;
+            background-color: #fff;
+            transition: border 0.3s ease;
+        }
+        input:focus, textarea:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        textarea {
+            resize: vertical;
+            height: 120px;
+        }
+        input[type="file"] {
+            padding: 10px;
+        }
+        button[type="submit"] {
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: absolute; /* Absolute positioning for the button */
+            bottom: 5px; /* Positioning from the bottom */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Center alignment */
+        }
+        button[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+        /* Icon styles */
+        .icon {
+            margin-right: 10px; /* Space between icon and text */
+        }
+    </style>
+    
+</head>
+<body>
+
+<header>
+    <h1>Cyber Harassment complaint</h1>
+</header>
+<div class="container">
+    <!-- Side Div with Buttons -->
+    <div class="platforms">
+        <h2>Complaint Harassment on:</h2>
+        <button class="btn-platform" onclick="showForm('form1')">Facebook</button>
+        <button class="btn-platform" onclick="showForm('form2')">Instagram</button>
+        <button class="btn-platform" onclick="showForm('form3')">Twitter</button>
+        <button class="btn-platform" onclick="showForm('form4')">WhatsApp</button>
+    </div>
+
+    <!-- Main Div with Forms -->
+    <div class="form-container">
+        <!-- Form for Facebook -->
+        <div id="form1" class="form">
+            <h3>Facebook Harassment Complaint</h3>
+            <form action="complaint_submission.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="category" value="Facebook">
+                <label for="fb-name">Name of the Victim:</label>
+                <input type="text" id="fb-name" name="name" placeholder="Enter your name" required>
+    
+                <label for="fb-address">Address of the Victim:</label>
+                <input type="text" id="fb-address" name="address" placeholder="Enter your address" required>
+    
+                <label for="fb-username">Social Media Username:</label>
+                <input type="text" id="fb-username" name="username" placeholder="Enter your Facebook username" required>
+    
+                <label for="fb-incident-date">Incident Date:</label>
+                <input type="date" id="fb-incident-date" name="incident_date" required>
+    
+                <label for="fb-complaint">Complaint:</label>
+                <textarea id="fb-complaint" name="complaint" placeholder="Describe the complaint..." required></textarea>
+    
+                <label for="fb-proof">Complaint Proof (Max 2 images):</label>
+                <input type="file" id="fb-proof" name="proof[]" accept="image/*" multiple required>
+    
+                <button type="submit">Submit Report</button>
+            </form>
+        </div>
+    
+        <!-- Form for Instagram -->
+        <div id="form2" class="form">
+            <h3>Instagram Harassment Complaint</h3>
+            <form action="complaint_submission.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="category" value="Instagram">
+                <label for="ig-name">Name of the Victim:</label>
+                <input type="text" id="ig-name" name="name" placeholder="Enter your name" required>
+    
+                <label for="ig-address">Address of the Victim:</label>
+                <input type="text" id="ig-address" name="address" placeholder="Enter your address" required>
+    
+                <label for="ig-username">Social Media Username:</label>
+                <input type="text" id="ig-username" name="username" placeholder="Enter your Instagram username" required>
+    
+                <label for="ig-incident-date">Incident Date:</label>
+                <input type="date" id="ig-incident-date" name="incident_date" required>
+    
+                <label for="ig-complaint">Complaint:</label>
+                <textarea id="ig-complaint" name="complaint" placeholder="Describe the complaint..." required></textarea>
+    
+                <label for="ig-proof">Complaint Proof (Max 2 images):</label>
+                <input type="file" id="ig-proof" name="proof[]" accept="image/*" multiple required>
+    
+                <button type="submit">Submit Report</button>
+            </form>
+        </div>
+    
+        <!-- Form for Twitter -->
+        <div id="form3" class="form">
+            <h3>Twitter Harassment Complaint</h3>
+            <form action="complaint_submission.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="category" value="Twitter">
+                <label for="tw-name">Name of the Victim:</label>
+                <input type="text" id="tw-name" name="name" placeholder="Enter your name" required>
+    
+                <label for="tw-address">Address of the Victim:</label>
+                <input type="text" id="tw-address" name="address" placeholder="Enter your address" required>
+    
+                <label for="tw-username">Social Media Username:</label>
+                <input type="text" id="tw-username" name="username" placeholder="Enter your Twitter username" required>
+    
+                <label for="tw-incident-date">Incident Date:</label>
+                <input type="date" id="tw-incident-date" name="incident_date" required>
+    
+                <label for="tw-complaint">Complaint:</label>
+                <textarea id="tw-complaint" name="complaint" placeholder="Describe the complaint..." required></textarea>
+    
+                <label for="tw-proof">Complaint Proof (Max 2 images):</label>
+                <input type="file" id="tw-proof" name="proof[]" accept="image/*" multiple required>
+    
+                <button type="submit">Submit Report</button>
+            </form>
+        </div>
+    
+        <!-- Form for WhatsApp -->
+        <div id="form4" class="form">
+            <h3>WhatsApp Harassment Complaint</h3>
+            <form action="complaint_submission.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="category" value="WhatsApp">
+                <label for="wa-name">Name of the Victim:</label>
+                <input type="text" id="wa-name" name="name" placeholder="Enter your name" required>
+    
+                <label for="wa-address">Address of the Victim:</label>
+                <input type="text" id="wa-address" name="address" placeholder="Enter your address" required>
+    
+                <label for="wa-username">Social Media Username:</label>
+                <input type="text" id="wa-username" name="username" placeholder="Enter your WhatsApp number" required>
+    
+                <label for="wa-incident-date">Incident Date:</label>
+                <input type="date" id="wa-incident-date" name="incident_date" required>
+    
+                <label for="wa-complaint">Complaint:</label>
+                <textarea id="wa-complaint" name="complaint" placeholder="Describe the complaint..." required></textarea>
+    
+                <label for="wa-proof">Complaint Proof (Max 2 images):</label>
+                <input type="file" id="wa-proof" name="proof[]" accept="image/*" multiple required>
+    
+                <button type="submit">Submit Report</button>
+            </form>
+        </div>
+    </div>
+    
+</div>
+
+<footer>
+    <p>&copy; 2024 Cyber Harassment Reporting System</p>
+</footer>
+
+<script>
+    function showForm(formId) {
+        // Hide all forms
+        const forms = document.querySelectorAll('.form');
+        forms.forEach(form => {
+            form.classList.remove('active');
+        });
+        // Show the selected form
+        const selectedForm = document.getElementById(formId);
+        selectedForm.classList.add('active');
+    }
+
+    function submitReport(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Display an alert message
+        alert("Thank you for your submission. Your report has been submitted.");
+
+        // Reset the form fields
+        event.target.reset();
+
+        // Optionally, you can also hide the form if needed
+        const form = event.target.parentElement;
+        form.classList.remove('active');
+        return false; // Prevent any further action
+    }
+    
+</script>
+
+</body>
+</html>

@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Trigger Call System</title>
+    <link rel="stylesheet" href="(link unavailable)">
+    <link href="(link unavailable)" rel="stylesheet">
+    <style>
+        body {
+            background-color: #bcbcbc;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Raleway', sans-serif;
+            animation: fadeIn 2s ease-in-out;
+        }
+        
+        .content-box {
+            background-color: #ff0000;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: pulseBackground 2s infinite;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+            font-size: 3rem;
+            font-weight: 700;
+            color: black;
+        }
+        
+        button {
+            background-color: #ff0000;
+            color: white;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        button:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="content-box">
+        <button aria-label="Click to activate voice-triggered call">
+            <span>Voice Trigger Call</span>
+        </button>
+    </div>
+    <script>
+        let isCallTriggered = false; // Flag to prevent multiple calls in quick succession
+        const phoneNumber = "+919542629626"; // Emergency phone number
+        
+        // Function to trigger the call
+        function triggerCall() {
+            if (isCallTriggered) return; // Prevent multiple calls in quick succession
+            isCallTriggered = true;
+            window.location.href = `tel:${phoneNumber}`; // Automatically dial the emergency number
+            setTimeout(() => {
+                isCallTriggered = false; // Reset flag after 30 seconds to allow new calls
+            }, 30000); // Reset flag after 30 seconds
+        }
+        
+        // Function to start voice recognition
+        function startVoiceRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition) {
+                const recognition = new SpeechRecognition();
+                recognition.continuous = true; // Keep listening continuously
+                recognition.interimResults = false; // Don't show interim results
+                recognition.lang = 'english'; // Set language for voice recognition
+                
+                recognition.onstart = function() {
+                    console.log('Voice recognition started, listening for "Help Me", "Abhaya", or "help"....');
+                };
+                
+                recognition.onresult = function(event) {
+                    let transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+                    console.log('Transcript:', transcript);
+                    if (transcript.includes('help me') || transcript.includes('abhaya') || transcript.includes('help')) {
+                        triggerCall(); // Trigger call if the phrase is recognized
+                    }
+                    recognition.start(); // Restart recognition immediately after result
+                };
+                
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event);
+                };
+                
+                recognition.onend = function() {
+                    console.log('Recognition ended.');
+                };
+                
+                recognition.start(); // Start voice recognition
+            } else {
+                alert('Speech recognition is not supported in your browser. Please use Google Chrome.');
+            }
+        }
+        
+        // Request microphone permission and start voice recognition
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(function(stream) {
+                console.log('Microphone access granted.');
+                startVoiceRecognition(); // Start voice recognition after permission granted
+            })
+            .catch(function(err) {
+                console.error('Microphone access denied:', err);
+            });
+    </script>
+</body>
+</html>

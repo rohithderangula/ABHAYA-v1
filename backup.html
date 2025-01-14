@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abhaya - Safety App</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- AOS CSS for animations -->
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body onclick="showLoginAlert()">
+    
+    <div id="root"></div>
+
+    <!-- React and Babel CDN -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
+    <!-- AOS JS for animations -->
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+    <!-- React Code -->
+    <script type="text/babel">
+        AOS.init({
+            duration: 1000,
+            easing: 'ease-in-out'
+        });
+
+        // React component for Header
+        function Header() {
+    const [isMobileModalOpen, setMobileModalOpen] = React.useState(false);
+    const [mobileNumbers, setMobileNumbers] = React.useState([{ number: '', relation: '' }]);
+
+    const handleMobileInputChange = (index, event) => {
+        const { name, value } = event.target;
+        const updatedNumbers = [...mobileNumbers];
+        updatedNumbers[index][name] = value;
+        setMobileNumbers(updatedNumbers);
+    };
+
+    const addMobileNumber = () => {
+        if (mobileNumbers.length < 5) {
+            setMobileNumbers([...mobileNumbers, { number: '', relation: '' }]);
+        }
+    };
+
+    const removeMobileNumber = (index) => {
+        const updatedNumbers = mobileNumbers.filter((_, i) => i !== index);
+        setMobileNumbers(updatedNumbers);
+    };
+
+    const handleMobileSubmit = (event) => {
+        event.preventDefault();
+        // Validate that all mobile numbers are 10 digits
+        if (mobileNumbers.some(item => item.number.length !== 10)) {
+            alert('All mobile numbers must be exactly 10 digits.');
+            return;
+        }
+        console.log("Mobile Numbers Submitted:", mobileNumbers);
+        alert('The required details have been queried.'); // Alert message
+        localStorage.setItem('mobileNumbers', JSON.stringify(mobileNumbers)); // Save to localStorage
+        setMobileModalOpen(false); // Close the modal after submission
+    };
+
+    const toggleMobileModal = () => {
+        setMobileModalOpen(!isMobileModalOpen);
+    };
+
+    return (
+        <header className="header text-white py-6 shadow-md">
+            <div className="container mx-auto text-center relative">
+                <img src="ab.jpg" className="logo" alt="logo" />
+                <h1 className="text-3xl font-bold">ABHAYA</h1>
+                <p className="text-lg font-semibold mt-2">Forever Strength and Safety</p>
+                <nav className="mt-4">
+                    <a href="#features" className="text-white mx-4 hover:text-pink-300"></a>
+                    <a  className="text-white mx-4 hover:text-pink-300 cursor-pointer"></a>
+                </nav>
+                <a href="profile.php" target="" rel="noopener noreferrer">
+                    <img src="https://tse4.mm.bing.net/th?id=OIP.t9hCbLdlgwJ9l-bcDeBUYQAAAA&pid=Api&P=0&h=220" className="logo1" alt="Profile Image" />
+                </a>
+
+                {/* Mobile Numbers Modal */}
+                {isMobileModalOpen && (
+                    <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
+                        <div className="bg-white p-6 rounded shadow-lg text-black">
+                            <h2 className="text-xl font-bold mb-4">Enter Mobile Numbers</h2>
+                            <form onSubmit={handleMobileSubmit}>
+                                {mobileNumbers.map((item, index) => (
+                                    <div key={index} className="mb-4">
+                                        <input
+                                            type="text"
+                                            name="number"
+                                            placeholder="Mobile Number"
+                                            value={item.number}
+                                            onChange={(event) => handleMobileInputChange(index, event)}
+                                            className="border border-gray-300 p-2 rounded w-full mb-2"
+                                            maxLength="10" // Limit input to 10 digits
+                                        />
+                                        <input
+                                            type="text"
+                                            name="relation"
+                                            placeholder="Relation"
+                                            value={item.relation}
+                                            onChange={(event) => handleMobileInputChange(index, event)}
+                                            className="border border-gray-300 p-2 rounded w-full mb-2"
+                                        />
+                                        {mobileNumbers.length > 1 && (
+                                            <button type="button" onClick={() => removeMobileNumber(index)} className="text-red-500">Remove</button>
+                                        )}
+                                    </div>
+                                ))}
+                                <div className="mt-4 flex justify-between">
+                                    <button type="button" onClick={addMobileNumber} className="bg-gray-300 py-2 px-4 rounded hover:bg-gray-400">Add Another Number</button>
+                                    <div className="flex justify-end">
+                                        <button type="button" onClick={() => setMobileModalOpen(false)} className="mr-2 bg-gray-300 py-2 px-4 rounded hover:bg-gray-400">Cancel</button>
+                                        <button type="submit" className="bg-pink-500 py-2 px-4 text-white rounded hover:bg-pink-700">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </header>
+    );
+}
+
+
+        // React component for Features
+        function Feature({ title, colorClass, iconClass, link }) {
+            return (
+                <button className={`feature-card ${colorClass}`} data-aos="fade-up" onClick={() => window.location.href = link}>
+                    <i className={iconClass}></i>
+                    <h3>{title}</h3>
+                </button>
+            );
+        }
+
+        function Features() {
+        const featureList = [
+        { title: 'Panic Button', colorClass: 'bg-purple-300', iconClass: 'fas fa-exclamation-triangle', link: 'panic.html' },
+        { title: 'Video Streaming', colorClass: 'bg-pink-300', iconClass: 'fas fa-video', link: 'audio.html' },
+        { title: 'Community', colorClass: 'bg-red-300', iconClass: 'fas fa-users', link: 'community.html' },
+        { title: 'Safety Tips & Resources', colorClass: 'bg-teal-300', iconClass: 'fas fa-info-circle', link: 'safety.html' },
+        { title: 'Emergency Contacts', colorClass: 'bg-orange-300', iconClass: 'fas fa-user-friends', link: 'emer.html' },
+        { title: 'Offline Functionality', colorClass: 'bg-red-300', iconClass: 'fas fa-plug', link: 'voice.html' },
+        { title: 'Geo-Fencing', colorClass: 'bg-blue-300', iconClass: 'fas fa-map', link: 'geo.html' },
+        { title: 'Anonymous report', colorClass: 'bg-yellow-300', iconClass: 'fas fa-exclamation', link: 'cyber.html' },
+        { title: 'Car Crash', colorClass: 'bg-red-300', iconClass: 'fas fa-car-crash', link: 'car.html' },
+        { title: 'drone surveillance', colorClass: 'bg-orange-300', iconClass: 'fas fa-lightbulb', link: 'drone.html' }, // New feature added here
+        { title: 'Location Tracking', colorClass: 'green-300', iconClass: 'fas fa-map-marker-alt', link: 'live.html' }
+    ];
+
+    return (
+        <section id="features" className="feature-container">
+            <div className="feature-column">
+                {featureList.slice(0, Math.ceil(featureList.length / 2)).map((feature, index) => (
+                    <Feature key={index} {...feature} />
+                ))}
+            </div>
+            <div className="feature-column">
+                {featureList.slice(Math.ceil(featureList.length / 2)).map((feature, index) => (
+                    <Feature key={index} {...feature} />
+                ))}
+            </div>
+        </section>
+    );
+}
+
+function SOSButton() {
+    const makeCall = () => {
+        const phoneNumber = "+919133159867"; // Replace with the desired phone number
+        window.location.href = `tel:${phoneNumber}`; // Redirect to the phone app to make the call
+    };
+
+    return (
+        <div className="sos-button" onDoubleClick={makeCall}>
+            <span>ABHAYA</span>
+        </div>
+    );s
+}
+
+function showLoginAlert() {
+            alert("Please log in to access this feature.");
+            window.location.href = 'login.html'; // Redirect to login page
+        }
+
+        function Footer() {
+            return (
+                <footer className="footer text-white text-center">
+                    <p>&copy; 2024 Abhaya Safety App. All Rights Reserved.</p>
+                    <div className="social-icons">
+                        <a href="#" aria-label="Facebook"><i className="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i className="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="YouTube"><i className="fab fa-youtube"></i></a>
+                        <a href="#" aria-label="Instagram"><i className="fab fa-instagram"></i></a>
+                    </div>
+                </footer>
+            );
+        }
+
+        function App() {
+            return (
+                <div>
+                    <Header />
+                    <Features />
+                    <SOSButton />
+                    <Footer />
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

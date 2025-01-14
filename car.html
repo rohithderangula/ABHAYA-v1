@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Crash Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #e3dada 0%, #e5cfcf 50%, #e1aaaa 100%);
+            color: white;
+        }
+
+        h1 {
+            color: black;
+        }
+
+        #status, #speed {
+            margin-top: 20px;
+            font-size: 18px;
+            color: black;
+        }
+
+        #emergencyMessage {
+            color: yellow;
+            font-size: 20px;
+            margin-top: 20px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="title">Vehicle Crash Detection</h1>
+    <p id="status">Monitoring speed...</p>
+    <p id="speed">Speed: 0 km/h</p>
+    <p id="emergencyMessage"></p>
+    <button id="simulateButton">Simulate Motion</button>
+
+    <script>
+        const crashThreshold = 70;
+        let alertSentCount = 0;
+        const maxAlerts = 2;
+        let simulationActive = false;
+
+        function startMonitoring() {
+            if (!simulationActive) {
+                simulationActive = true;
+                document.getElementById("status").innerText = "Simulating speed...";
+                simulateSpeed();
+            }
+        }
+
+        function simulateSpeed() {
+            const simulatedSpeed = 70;
+            let currentSpeed = 0;
+            const speedElement = document.getElementById("speed");
+
+            const speedAnimation = setInterval(() => {
+                if (currentSpeed < simulatedSpeed) {
+                    currentSpeed += 0.7;
+                    speedElement.innerText = `Speed: ${currentSpeed.toFixed(2)} km/h`;
+
+                    if (currentSpeed >= crashThreshold) {
+                        document.getElementById("emergencyMessage").innerText = "Crash Detected at High Speed!";
+                        document.getElementById("title").innerHTML = '<span style="color:red; font-size: 48px;">Vehicle Crashed</span>';
+                        clearInterval(speedAnimation);
+                        sendEmergencyAlert();
+                    }
+                } else {
+                    clearInterval(speedAnimation);
+                }
+            }, 100);
+        }
+
+        function sendEmergencyAlert() {
+            if (alertSentCount < maxAlerts) {
+                const phoneNumbers = ["+919542629626", "+919133159867", "+917207245888"];
+
+                document.getElementById("emergencyMessage").innerText = "Emergency Alert Sent!";
+
+                fetch('send_alert.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: "Emergency! A vehicle's crash detected at high speed!",
+                        recipients: phoneNumbers,
+                        crash_location: "Unknown" // Add real location if available
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alertSentCount++;
+                        alert("Request has been sent successfully!");
+                        window.location.href = "Abhaya.html";
+                    } else {
+                        document.getElementById("emergencyMessage").innerText = "Failed to send alert.";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById("emergencyMessage").innerText = "Failed to send alert.";
+                });
+            }
+        }
+
+        document.getElementById("simulateButton").addEventListener("click", startMonitoring);
+    </script>
+</body>
+</html>

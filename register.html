@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        *,
+        *:before,
+        *:after {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, white, #e0dde2);
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+        }
+        .logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .logo-img {
+            width: 200px; 
+            height: 200px;
+            border-radius: 100px;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .title {
+            margin-bottom: 24px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            animation: colorZoom 3s infinite ease-in-out; /* Continuous color and zoom animation */
+        }
+
+        /* Keyframes for continuous color change and zoom effect */
+        @keyframes colorZoom {
+            0% {
+                color: #333;
+                transform: scale(1);
+            }
+            50% {
+                color: #3498db;       /* Change to blue midway */
+                transform: scale(1.1); /* Zoom in */
+            }
+            100% {
+                color: #333;          /* Change back to original color */
+                transform: scale(1);  /* Zoom out */
+            }
+        }
+
+         .message {
+            margin-bottom: 24px;
+            color: #666666;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .signin {
+            margin-top: 24px;
+            color: #666666;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .signin a {
+            color: #007BFF;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signin a:hover {
+            color: #0056b3;
+        }
+
+        .input,
+        .button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .input:focus {
+            border-color: #007BFF;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+        }
+
+        .button {
+            cursor: pointer;
+            background: #007BFF;
+            color: #fff;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            border-radius: 15px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .button:hover {
+            background: #0056b3;
+        }
+
+        .button:active {
+            background: #004494;
+            transform: scale(0.98);
+        }
+
+        .flex {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .flex label {
+            flex: 1;
+        }
+
+        label {
+            display: flex;
+            flex-direction: column;
+            gap: 12px; /* Increased gap here */
+        }
+
+        label span {
+            font-size: 18px;
+            color: #09090a; /* Dark text color */
+            font-weight: bold; /* Bold text */
+            text-decoration: underline; /* Underline text */
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="form-container"> 
+        <div class="logo">
+            <img src="https://i.ibb.co/bPgZ74f/logo.png"class="logo-img" />
+        </div>   
+        <form class="form"  method="POST" id="form" action="register.php">
+            <p class="title">Register</p>
+            <p class="message">Sign up now and get full access to our app.</p>
+            <div id="res" style="color: green;font-size: 14px;"></div>
+            <br>
+            <div class="flex">
+                <label>
+                    <span>Firstname</span>
+                    <input required type="text" name="firstname" class="input" placeholder="Enter your first name">
+                </label>
+                <label>
+                    <span>Lastname</span>
+                    <input required type="text" name="lastname" class="input" placeholder="Enter your last name">
+                </label>
+            </div>
+            <label>
+                <span>Email</span>
+                <input required type="email" name="email" class="input" placeholder="Enter your email">
+            </label>
+            <label>
+                <span>Phone no</span>
+                <input required type="text" name="phone_no" class="input" placeholder="Phone number must be 10 digits" pattern="\d{10}" title="Phone number must be 10 digits">
+            </label>            
+            <label>
+                <span>Password</span>
+                <input required type="password" name="password" class="input" placeholder="Your password have must one capital,numbers,Symbols,atleat 8 digits" 
+                       pattern="(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}" 
+                       title="Password must be at least 8 characters long, include at least one uppercase letter, one number, and one special character">
+            </label>
+            <label>
+                <span>Confirm Password</span>
+                <input required type="password" name="confirm_password" class="input" placeholder="Confirm your password">
+            </label>
+            <button type="submit" name="register" class="button">Submit</button>
+            <p class="signin">Already have an account? <a href="login.html">Sign in</a></p>
+        </form>
+    </div>
+</body>
+
+</html>
