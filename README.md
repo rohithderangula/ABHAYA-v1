@@ -22,11 +22,10 @@ Abhaya is a cutting-edge people safety application designed to ensure personal s
 ## Technologies Used
 
 - **Frontend**: HTML, CSS, JavaScript
-- **Backend**: PHP, Java
+- **Backend**: PHP, 
 - **Database**: MySQL
 - **Third-party APIs**: Google Maps API, Twilio API
-- **Tools**: XAMPP, Spring Boot, GuzzleHTTP
-
+- **Tools**: XAMPP
 ---
 
 ## Installation
